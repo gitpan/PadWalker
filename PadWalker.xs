@@ -131,58 +131,38 @@ I32 uplevel;
     HV* ret = newHV();
     PERL_CONTEXT* cx;
     CV* cur_cv;
-    AV* cv_padlist;
-    COP* return_cop;
-    OP* retop;
-
-    I32 i;
+    U32 seq;
 
   PPCODE:
+
+    if (uplevel == 0)
+      seq = PL_curcop->cop_seq;
+
+    else {
+      cx = upcontext(aTHX_ uplevel - 1);
+      if (!cx) croak("Not nested deeply enough");
+      seq = cx->blk_oldcop->cop_seq;
+    }
+
     cx = upcontext(aTHX_ uplevel);
-
     if (!cx) {
-      /*printf("(null context)\n");*/
- 
-      if (uplevel == 0)
-        return_cop = PL_curcop;
-
-      else {
-
-	if (cxstack_ix >= 1)
-          return_cop = cxstack[1].blk_oldcop;
-        else
-          return_cop = PL_curcop;
-
-      }
-
-      pads_into_hash(PL_comppad_name, PL_comppad, ret, return_cop->cop_seq);
+      pads_into_hash(PL_comppad_name, PL_comppad, ret, seq);
     }
     else {
-      /*printf("cxstack_ix - %x\n", cxstack_ix);*/
-      if (uplevel == 0)
-        return_cop = PL_curcop;
-      else if (cxstack_ix >= 1)
-        return_cop = (cx + 1) -> blk_oldcop;
-      else
-        return_cop = cx -> blk_oldcop;
-
-      if (cx->cx_type != CXt_SUB)
-        croak("cx_type is %d not CXt_SUB\n",cx->cx_type );
-
+    
       cur_cv = cx->blk_sub.cv;
       if (!cur_cv)
-        croak("Context has no CV!\n");
-
+        die("Context has no CV!\n");
+    
+      /*printf("cv name = %s\n", GvNAME(CvGV(cur_cv)));*/
       while (cur_cv) {
-          padlist_into_hash(CvPADLIST(cur_cv), ret, return_cop->cop_seq);
+          padlist_into_hash(CvPADLIST(cur_cv), ret, seq);
           cur_cv = CvOUTSIDE(cur_cv);
       }
-
     }
 
     EXTEND(SP, 1);
     PUSHs(sv_2mortal(newRV_noinc((SV*)ret)));
-
 
 void
 peek_sub(cur_sv)
@@ -193,10 +173,10 @@ SV* cur_sv;
     AV* cv_padlist;
 
   PPCODE:
-      //while (cur_cv) {
+      /*while (cur_cv) {*/
           padlist_into_hash(CvPADLIST(cur_cv), ret, 0);
-      //    cur_cv = CvOUTSIDE(cur_cv);
-    //}
+      /*    cur_cv = CvOUTSIDE(cur_cv);
+    }  */
 
     EXTEND(SP, 1);
     PUSHs(sv_2mortal(newRV_noinc((SV*)ret)));

@@ -10,7 +10,7 @@ require 5.006;
 @ISA = qw(Exporter DynaLoader);
 @EXPORT_OK = qw(peek_my peek_sub);
 
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 bootstrap PadWalker $VERSION;
 
@@ -33,7 +33,7 @@ PadWalker - walk pads
 
 PadWalker is a module which allows you to inspect (and even change!)
 lexical variables in any subroutine which called you. It will only
-show those variable which are in-scope at the point of the call.
+show those variables which are in scope at the point of the call.
 
 The C<peek_my> routine takes one parameter, the number of call levels
 to go back. (It works the same way as caller() does.) It returns a
@@ -67,15 +67,13 @@ Robin Houston <robin@kitsite.com>
 
 With contributions from Richard Soberberg.
 
-=back
-
 =head1 SEE ALSO
 
 perl(1).
 
 =head1 COPYRIGHT
 
-Copyright (c) 2000-2001, Robin Houston. All Rights Reserved.
+Copyright (c) 2000-2002, Robin Houston. All Rights Reserved.
 This module is free software. It may be used, redistributed
 and/or modified under the same terms as Perl itself.
 

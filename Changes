@@ -14,3 +14,7 @@ of time. Sorry about that.
 
 0.05  Thu Jan 10 21:12:10 GMT 2002
 	- Experimental peek_sub routine
+
+0.06  Wed Mar  6 22:16:13 GMT 2002
+	- Proper test script
+	- Two bug fixes

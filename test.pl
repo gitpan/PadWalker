@@ -1,12 +1,4 @@
-# Before `make install' is performed this script should be runnable with
-# `make test'. After `make install' it should work as `perl test.pl'
-
-######################### We start with some black magic to print on failure.
-
-# Change 1..1 below to 1..last_test_to_print .
-# (It may become useful if the test is moved to ./t subdirectory.)
-
-BEGIN { $| = 1; print "1..1\n"; }
+BEGIN { $| = 1; print "1..13\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use PadWalker;
 $loaded = 1;
@@ -14,15 +6,24 @@ print "ok 1\n";
 
 ######################### End of black magic.
 
-# Insert your test code below (better if it prints "ok 13"
-# (correspondingly "not ok 13") depending on the success of chunk 13
-# of the test code):
-
-sub showvars {
-  my ($h) = @_;
+sub onlyvars {
+  my (@initial);
+  my ($t, $h, @names) = @_;
+  my %names;
+  @names{@names} = (1) x @names;
+  
   while (my ($n,$v) = each %$h) {
-    print $n, " => ", $v, "\n";
+    if (!exists $names{$n}) {
+      print "not ok $t\t# Unexpected interloper $n\n";
+      return;
+    }
+    delete $names{$n};
   }
+  if (keys %names) {
+    print "not ok $t\t# Not found: ", join(', ', keys %names), "\n";
+    return;
+  }
+  print "ok $t\n";
 }
 
 my $outside_var = 12345;
@@ -36,66 +37,76 @@ sub foo {
   #my $hmm = 21;
 
   my $h = PadWalker::peek_my(0);
-  showvars($h);
+  onlyvars(2, $h, qw'$outside_var $variable');
 
   ${$h->{'$variable'}} = 666;
-  print "$variable is now 666\n";
 }
 
 sub bar {
+  local ($t, $l, @v) = @_;
+
   my %x = (1 => 2);
   my $y = 9;
 
-  baz(@_);
+  onlyvars($t, baz($l), @v);
+  
   my @z = qw/not yet visible/;
 }
 
 sub baz {
   my $baz_var;
-  showvars(PadWalker::peek_my(shift));
+  return PadWalker::peek_my(shift);
 }
 
-print "-------test 1\n";
-foo();
-print "-------test 2\n";
-bar(1);
-print "-------test 3\n";
-&{ my @array=qw(fring thrum); sub {bar(2);} };
+foo();										# test 2
+
+bar(3, 1, qw($outside_var $y %x));						# test 3
+
+&{ my @array=qw(fring thrum); sub {bar(4, 2, qw(@array $outside_var));} };	# test 4
 
 sub {1};
-
 my $alot_before;
-print "-------test 4\n";
-showvars(PadWalker::peek_my(0));
-print "-------test 5\n";
+onlyvars(5, PadWalker::peek_my(0), qw($outside_var $alot_before));		# test 5
+
 my $before;
-showvars(baz(1));
+onlyvars(6, baz(1), qw($outside_var $alot_before $before));			# test 6
 my $after;
 
-print "-------test 6\n";
-showvars(baz(0));
+onlyvars(7, baz(0), qw($baz_var $outside_var));					# test 7
 
-print "-------test 7\n";
 sub quux {
   my %quux_var;
   bar(@_);
 }
 
-quux(2);
-print "-------test 8\n";
-quux(3);
+quux(8, 2, qw($before $alot_before $after $outside_var %quux_var));		# test 8
 
-print "-------test 9\n";
-quux(1);
+# Come right out to the file scope
+my $discriminate1;
+{ my $discriminate2;
+ quux(9, 3, qw( $before $alot_before $after $outside_var
+ 		$discriminate1 $discriminate2));				# test 9
+}
 
-print "-------test 10\n";
-tie my $x, "blah";
+quux(10, 1, qw($outside_var $y %x));						# test 10
 
+tie my $x, "blah", 2;
 my $yyy;
-showvars($x);
+onlyvars(11, $x, qw($outside_var $x $yyy
+		    $alot_before $before $after $discriminate1));		# test 11
 my $too_late;
+
+# This is quite a subtle one: the variable $x is actually FETCHed from inside
+# the onlyvars subroutine. The magical scalar is on the stack until line 2 of
+# onlyvars. So if we peek back one level from the FETCH, we can see inside
+# onlyvars.
+tie $x, "blah", 1;
+onlyvars(12, $x, qw(@initial));							# test 12
+
+eval { PadWalker::peek_my(1) };
+print (($@ =~ /^Not nested deeply enough/) ? "ok 13\n" : "not ok 13\n");	# test 13
 
 package blah;
 
-sub TIESCALAR { my $x=1; bless \$x }
-sub FETCH  { return PadWalker::peek_my(1) }
+sub TIESCALAR { my ($class, $x)=@_; bless \$x }
+sub FETCH     { my $self = shift; return PadWalker::peek_my($$self) }

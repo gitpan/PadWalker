@@ -1,6 +1,10 @@
 -----------------------------------------------------------------------------
-| PadWalker v0.05    - Robin Houston
+| PadWalker v0.06    - Robin Houston
 -----------------------------------------------------------------------------
+
+Changes since v0.05:
+	- Proper test suite
+	- Various bugs fixed
 
 Changes since v0.04:
 	- Experimental peek_sub routine
@@ -12,7 +16,7 @@ Changes since v0.03:
 DESCRIPTION
     PadWalker is a module which allows you to inspect (and even change!)
     lexical variables in any subroutine which called you. It will only show
-    those variable which are in-scope at the point of the call.
+    those variables which are in scope at the point of the call.
 
     The `peek_my' routine takes one parameter, the number of call levels to
     go back. (It works the same way as caller() does.) It returns a
@@ -36,6 +40,10 @@ DESCRIPTION
       my $x=5;
       increment_my_x;
       print $x;  # prints 6
+
+    The `peek_sub' routine takes a coderef as its argument,
+    and returns a hash of the lexical variables used in that
+    sub.
 
 AUTHOR
     Robin Houston <robin@kitsite.com>
