@@ -1,11 +1,10 @@
 -----------------------------------------------------------------------------
-| PadWalker v0.08    - Robin Houston
+| PadWalker v0.09    - Robin Houston
 -----------------------------------------------------------------------------
 
-Changes since v0.07:
-	- _upcontext() XSUB, for Richard Clamp
-	- work properly with recursion
-	- see past eval
+Changes since v0.08:
+	- compile on threaded builds
+	- skip test 9 if we're on Perl 5.8. (Otherwise it fails.)
 
 DESCRIPTION
     PadWalker is a module which allows you to inspect (and even change!)

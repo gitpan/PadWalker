@@ -11,7 +11,7 @@ require 5.00502;
 @ISA = qw(Exporter DynaLoader);
 @EXPORT_OK = qw(peek_my peek_sub);
 
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 bootstrap PadWalker $VERSION;
 

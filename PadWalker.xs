@@ -234,4 +234,4 @@ void
 _upcontext(uplevel)
 I32 uplevel
   PPCODE:
-    XPUSHs(sv_2mortal(newSViv((U32)upcontext(uplevel, 0, 0, 0))));
+    XPUSHs(sv_2mortal(newSViv((U32)upcontext(aTHX_ uplevel, 0, 0, 0))));

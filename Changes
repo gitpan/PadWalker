@@ -28,3 +28,8 @@ of time. Sorry about that.
 	- _upcontext() XSUB, for Richard Clamp
 	- work properly with recursion
 	- see past eval
+
+0.09  Wed May 21 17:24:32 BST 2003
+        - compile on threaded builds
+        - skip test 9 if we're on Perl 5.8. (Otherwise it fails.)
+
