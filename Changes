@@ -3,3 +3,14 @@ Revision history for Perl extension PadWalker.
 0.01  Thu Nov  9 12:58:10 2000
 	- original version; created by h2xs 1.19
 
+Revision history between 0.01 and 0.03 has been lost in the mists
+of time. Sorry about that.
+
+0.03 was the first public release.
+
+0.04  Thu Jul 19 13:50:19 BST 2001
+	- Applied patch from Richard Soderberg to let it compile
+	  under ithreads
+
+0.05  Thu Jan 10 21:12:10 GMT 2002
+	- Experimental peek_sub routine
