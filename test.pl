@@ -1,4 +1,4 @@
-BEGIN { $| = 1; print "1..13\n"; }
+BEGIN { $| = 1; print "1..15\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use PadWalker;
 $loaded = 1;
@@ -81,12 +81,12 @@ sub quux {
 
 quux(8, 2, qw($before $alot_before $after $outside_var %quux_var));		# test 8
 
-# Come right out to the file scope
+# Come right out to the file scope (and test eval handling)
 my $discriminate1;
-{ my $discriminate2;
+eval q{ my $inter; eval q{ my $discriminate2;
  quux(9, 3, qw( $before $alot_before $after $outside_var
- 		$discriminate1 $discriminate2));				# test 9
-}
+ 		$discriminate1 $discriminate2 $inter));				# test 9
+} };
 
 quux(10, 1, qw($outside_var $y %x));						# test 10
 
@@ -103,8 +103,29 @@ my $too_late;
 tie $x, "blah", 1;
 onlyvars(12, $x, qw(@initial));							# test 12
 
-eval { PadWalker::peek_my(1) };
+eval q{ PadWalker::peek_my(1) };
 print (($@ =~ /^Not nested deeply enough/) ? "ok 13\n" : "not ok 13\n");	# test 13
+
+sub recurse {
+  my ($i) = @_;
+  if ($i == 0) {
+    my $vars = PadWalker::peek_my(2);
+    my $val = ${$vars->{'$i'}};
+    print ($val eq "2" ? "ok 14\n" : "not ok 14\t# $val\n");
+  }
+  else {
+    recurse($i - 1);
+  }
+}
+
+recurse(5);									# test 14
+
+eval q{
+    my %e;
+    onlyvars(15, PadWalker::peek_my(0),
+		 qw($outside_var $x $yyy
+		    $alot_before $before $after $discriminate1 $too_late %e))
+};										# test 15
 
 package blah;
 

@@ -11,7 +11,7 @@ require 5.00502;
 @ISA = qw(Exporter DynaLoader);
 @EXPORT_OK = qw(peek_my peek_sub);
 
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 bootstrap PadWalker $VERSION;
 
@@ -72,7 +72,7 @@ from Peter Scott.
 
 =head1 SEE ALSO
 
-perl(1).
+Devel::LexAlias, Devel::Caller, Sub::Parameters
 
 =head1 COPYRIGHT
 

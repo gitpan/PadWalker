@@ -1,10 +1,11 @@
 -----------------------------------------------------------------------------
-| PadWalker v0.07    - Robin Houston
+| PadWalker v0.08    - Robin Houston
 -----------------------------------------------------------------------------
 
-Changes since v0.06:
-	- Behave properly with debugger
-	- POD documentation slightly cleaned up
+Changes since v0.07:
+	- _upcontext() XSUB, for Richard Clamp
+	- work properly with recursion
+	- see past eval
 
 DESCRIPTION
     PadWalker is a module which allows you to inspect (and even change!)

@@ -23,3 +23,8 @@ of time. Sorry about that.
 	- Clean up POD documentation
 	- Behave properly with debugger
 	- Work under Perl 5.005
+
+0.08  Mon Mar 18 17:54:16 GMT 2002
+	- _upcontext() XSUB, for Richard Clamp
+	- work properly with recursion
+	- see past eval
