@@ -2,6 +2,9 @@
 #include "perl.h"
 #include "XSUB.h"
 
+/* For development testing */
+#define debug_log(x)
+
 /* For 5.005 compatibility */
 #ifndef aTHX_
 #  define aTHX_
@@ -32,13 +35,12 @@ dopoptosub_at(pTHX_ PERL_CONTEXT *cxstk, I32 startingblock)
         switch (CxTYPE(cx)) {
         default:
             continue;
-        /* case CXt_EVAL: */
         case CXt_SUB:
     	/* In Perl 5.005, formats just used CXt_SUB */
 #ifdef CXt_FORMAT
         case CXt_FORMAT:
 #endif
-            DEBUG_l( Perl_deb(aTHX_ "(Found sub #%ld)\n", (long)i));
+            debug_log((aTHX_ "**(Found sub #%ld)\n", (long)i));
             return i;
         }
     }
@@ -106,10 +108,9 @@ pads_into_hash(AV* pad_namelist, AV* pad_vallist, HV* hash, U32 valid_at_seq)
 	if (SvPOKp(name_sv)) {
           char* name_str = SvPVX(name_sv);
 
-        /* printf("%s (%x,%x) [%x]\n", name_str, I_32(SvNVX(name_sv)), SvIVX(name_sv),
-                                    valid_at_seq); */
+        debug_log((aTHX_ "** %s (%x,%x) [%x]\n", name_str,
+               I_32(SvNVX(name_sv)), SvIVX(name_sv), valid_at_seq));
         
-
         /* Check that this variable is valid at the cop_seq
          * specified, by peeking into the NV and IV slots
          * of the name sv. (This must be one of those "breathtaking
@@ -125,9 +126,15 @@ pads_into_hash(AV* pad_namelist, AV* pad_vallist, HV* hash, U32 valid_at_seq)
             valid_at_seq > I_32(SvNVX(name_sv)))) &&
             strlen(name_str) > 1 )
 
-	    hv_store(hash, name_str, strlen(name_str),
-                     newRV_inc(*av_fetch(pad_vallist, i, 0)), 0);
+          {
+            SV **val_ptr, *val_sv;
 
+            val_ptr = av_fetch(pad_vallist, i, 0);
+            val_sv = val_ptr ? *val_ptr : &PL_sv_undef;
+
+	    hv_store(hash, name_str, strlen(name_str),
+                     newRV_inc(val_sv), 0);
+          }
         }
       }
     }
@@ -183,11 +190,12 @@ I32 uplevel;
 
   PPCODE:
     cx = upcontext(aTHX_ uplevel, &seq, &ccstack, &cxix);
+    debug_log((aTHX_ "** cxix = %d\n", cxix));
     context_vars(cx, ret, seq);
 
     for (; cxix >= 0; --cxix) {
+        debug_log((aTHX_ "** CxTYPE = %d\n", CxTYPE(&ccstack[cxix])));
         switch (CxTYPE(&ccstack[cxix])) {
-      
         case CXt_EVAL:
             switch(ccstack[cxix].blk_eval.old_op_type) {
             case OP_ENTEREVAL:

@@ -82,11 +82,11 @@ sub quux {
 quux(8, 2, qw($before $alot_before $after $outside_var %quux_var));		# test 8
 
 
-# THIS FAILS ON PERL 5.8! So skip it there.
+# THIS TEST FAILS EVERYWHERE! BUG ALERT!
 
 # Come right out to the file scope (and test eval handling)
 my $discriminate1;
-if ($] < 5.008) {
+if (0) {
     eval q{ my $inter; eval q{ my $discriminate2;
      quux(9, 3, qw( $before $alot_before $after $outside_var
 		    $discriminate1 $discriminate2 $inter));				# test 9

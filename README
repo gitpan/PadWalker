@@ -1,10 +1,11 @@
 -----------------------------------------------------------------------------
-| PadWalker v0.09    - Robin Houston
+| PadWalker v0.10    - Robin Houston
 -----------------------------------------------------------------------------
 
-Changes since v0.08:
-	- compile on threaded builds
-	- skip test 9 if we're on Perl 5.8. (Otherwise it fails.)
+Changes since v0.09:
+	- accommodate the new versions of perl (5.8.1)
+	- acknowledge that test 9 fails because nested eval handling
+	  is simply broken. (Fix in a future release.)
 
 DESCRIPTION
     PadWalker is a module which allows you to inspect (and even change!)
