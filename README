@@ -1,0 +1,34 @@
+-----------------------------------------------------------------------------
+| PadWalker v0.03    - Robin Houston
+-----------------------------------------------------------------------------
+
+DESCRIPTION
+    PadWalker is a module which allows you to inspect (and even change!)
+    lexical variables in any subroutine which called you. It will only show
+    those variable which are in-scope at the point of the call.
+
+    The `peek_my' routine takes one parameter, the number of call levels to
+    go back. (It works the same way as caller() does.) It returns a
+    reference to a hash which associates each variable name with a reference
+    to its value. The variable names include the prefix, so $x is actually
+    '$x'.
+
+    For example:
+        my $x = 12;
+        my $h = peek_my (0);
+        ${$h->{'$x'}}++;
+        print $x;  # prints 13
+
+    Or a more complex example:
+
+      sub increment_my_x {
+        my $h = peek_my (1);
+        ${$h->{'$x'}}++;
+      }
+
+      my $x=5;
+      increment_my_x;
+      print $x;  # prints 6
+
+AUTHOR
+    Robin Houston <robin@kitsite.com>
