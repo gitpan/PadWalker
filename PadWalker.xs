@@ -2,6 +2,23 @@
 #include "perl.h"
 #include "XSUB.h"
 
+/* For 5.005 compatibility */
+#ifndef aTHX_
+#  define aTHX_
+#endif
+#ifndef pTHX_
+#  define pTHX_
+#endif
+#ifndef pTHX
+#  define pTHX
+#endif
+#ifndef aTHX
+#  define aTHX
+#endif
+#ifndef CxTYPE
+#  define CxTYPE(cx) cx->cx_type
+#endif
+
 /* Stolen from pp_ctl.c (with modifications) */
 
 I32
@@ -17,7 +34,10 @@ dopoptosub_at(pTHX_ PERL_CONTEXT *cxstk, I32 startingblock)
             continue;
         /*case CXt_EVAL:*/
         case CXt_SUB:
+    	/* In Perl 5.005, formats just used CXt_SUB */
+#ifdef CXt_FORMAT
         case CXt_FORMAT:
+#endif
             DEBUG_l( Perl_deb(aTHX_ "(Found sub #%ld)\n", (long)i));
             return i;
         }
@@ -33,7 +53,7 @@ dopoptosub(pTHX_ I32 startingblock)
 }
 
 PERL_CONTEXT*
-upcontext(pTHX_ I32 count)
+upcontext(pTHX_ I32 count, U32 *cop_seq_ptr)
 {
     PERL_SI *top_si = PL_curstackinfo;
     I32 cxix = dopoptosub(aTHX_ cxstack_ix);
@@ -44,29 +64,26 @@ upcontext(pTHX_ I32 count)
     for (;;) {
         /* we may be in a higher stacklevel, so dig down deeper */
         while (cxix < 0 && top_si->si_type != PERLSI_MAIN) {
-            top_si = top_si->si_prev;
+            top_si  = top_si->si_prev;
             ccstack = top_si->si_cxstack;
             cxix = dopoptosub_at(aTHX_ ccstack, top_si->si_cxix);
         }
-        if (cxix < 0) {
+        if (cxix < 0 && count == 0) {
             return (PERL_CONTEXT *)0;
+        }
+        else if (cxix < 0) {
+            return (PERL_CONTEXT *)-1;
         }
         if (PL_DBsub && cxix >= 0 &&
                 ccstack[cxix].blk_sub.cv == GvCV(PL_DBsub))
             count++;
         if (!count--)
             break;
+
+        *cop_seq_ptr = ccstack[cxix].blk_oldcop->cop_seq;
         cxix = dopoptosub_at(aTHX_ ccstack, cxix - 1);
     }
-    cx = &ccstack[cxix];
-    if (CxTYPE(cx) == CXt_SUB || CxTYPE(cx) == CXt_FORMAT) {
-        dbcxix = dopoptosub_at(aTHX_ ccstack, cxix - 1);
-        /* We expect that ccstack[dbcxix] is CXt_SUB, anyway, the
-           field below is defined for any cx. */
-        if (PL_DBsub && dbcxix >= 0 && ccstack[dbcxix].blk_sub.cv == GvCV(PL_DBsub))
-            cx = &ccstack[dbcxix];
-    }
-    return cx;
+    return &ccstack[cxix];
 }
 
 /* end thievery */
@@ -122,7 +139,8 @@ padlist_into_hash(AV* padlist, HV* hash, U32 valid_at_seq)
     pads_into_hash(pad_namelist, pad_vallist, hash, valid_at_seq);
 }
 
-MODULE = PadWalker		PACKAGE = PadWalker		
+MODULE = PadWalker		PACKAGE = PadWalker
+PROTOTYPES: DISABLE		
 
 void
 peek_my(uplevel)
@@ -131,30 +149,22 @@ I32 uplevel;
     HV* ret = newHV();
     PERL_CONTEXT* cx;
     CV* cur_cv;
-    U32 seq;
+    U32 seq = PL_curcop->cop_seq;
 
   PPCODE:
-
-    if (uplevel == 0)
-      seq = PL_curcop->cop_seq;
-
-    else {
-      cx = upcontext(aTHX_ uplevel - 1);
-      if (!cx) croak("Not nested deeply enough");
-      seq = cx->blk_oldcop->cop_seq;
-    }
-
-    cx = upcontext(aTHX_ uplevel);
-    if (!cx) {
+    /*printf("cxstack_ix = %d\n", cxstack_ix);*/
+    cx = upcontext(aTHX_ uplevel, &seq);
+    if (cx == (PERL_CONTEXT*)-1)
+      croak("Not nested deeply enough");
+    else if (!cx) {
       pads_into_hash(PL_comppad_name, PL_comppad, ret, seq);
     }
     else {
-    
       cur_cv = cx->blk_sub.cv;
       if (!cur_cv)
         die("Context has no CV!\n");
     
-      /*printf("cv name = %s\n", GvNAME(CvGV(cur_cv)));*/
+      /*printf("cv name = %s; seq=%d\n", GvNAME(CvGV(cur_cv)), seq);*/
       while (cur_cv) {
           padlist_into_hash(CvPADLIST(cur_cv), ret, seq);
           cur_cv = CvOUTSIDE(cur_cv);
@@ -171,12 +181,7 @@ SV* cur_sv;
     CV* cur_cv = (CV*)SvRV(cur_sv);
     HV* ret = newHV();
     AV* cv_padlist;
-
   PPCODE:
-      /*while (cur_cv) {*/
-          padlist_into_hash(CvPADLIST(cur_cv), ret, 0);
-      /*    cur_cv = CvOUTSIDE(cur_cv);
-    }  */
-
+    padlist_into_hash(CvPADLIST(cur_cv), ret, 0);
     EXTEND(SP, 1);
     PUSHs(sv_2mortal(newRV_noinc((SV*)ret)));

@@ -1,17 +1,10 @@
 -----------------------------------------------------------------------------
-| PadWalker v0.06    - Robin Houston
+| PadWalker v0.07    - Robin Houston
 -----------------------------------------------------------------------------
 
-Changes since v0.05:
-	- Proper test suite
-	- Various bugs fixed
-
-Changes since v0.04:
-	- Experimental peek_sub routine
-
-Changes since v0.03:
-	- Applied patch from Richard Soderberg to let it compile
-	  under ithreads.
+Changes since v0.06:
+	- Behave properly with debugger
+	- POD documentation slightly cleaned up
 
 DESCRIPTION
     PadWalker is a module which allows you to inspect (and even change!)
@@ -46,4 +39,4 @@ DESCRIPTION
     sub.
 
 AUTHOR
-    Robin Houston <robin@kitsite.com>
+    Robin Houston <robin@cpan.org>

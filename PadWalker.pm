@@ -3,26 +3,27 @@ package PadWalker;
 use strict;
 use vars qw($VERSION @ISA @EXPORT_OK);
 
+require Exporter;
 require DynaLoader;
 
-require 5.006;
+require 5.00502;
 
 @ISA = qw(Exporter DynaLoader);
 @EXPORT_OK = qw(peek_my peek_sub);
 
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 bootstrap PadWalker $VERSION;
 
 sub peek_my;
-
+sub peek_sub;
 
 1;
 __END__
 
 =head1 NAME
 
-PadWalker - walk pads
+PadWalker - play with other peoples' lexical variables
 
 =head1 SYNOPSIS
 
@@ -41,6 +42,7 @@ reference to a hash which associates each variable name with a reference
 to its value. The variable names include the prefix, so $x is actually '$x'.
 
 For example:
+
   my $x = 12;
   my $h = peek_my (0);
   ${$h->{'$x'}}++;
@@ -63,9 +65,10 @@ of the lexical variables used in that sub.
 
 =head1 AUTHOR
 
-Robin Houston <robin@kitsite.com>
+Robin Houston <robin@cpan.org>
 
-With contributions from Richard Soberberg.
+With contributions from Richard Soberberg, and bug-spotting
+from Peter Scott.
 
 =head1 SEE ALSO
 
