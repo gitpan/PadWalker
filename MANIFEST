@@ -1,7 +1,12 @@
 Changes
 Makefile.PL
 MANIFEST
+PadWalker.c
 PadWalker.pm
-PadWalker.xs
 README
-test.pl
+t/bar.pl
+t/foo.t
+t/recurse.t
+t/test.t
+t/tt.t
+META.yml                                 Module meta-data (added by MakeMaker)

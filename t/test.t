@@ -6,6 +6,8 @@ print "ok 1\n";
 
 ######################### End of black magic.
 
+our $this_one_shouldnt_be_found;
+
 sub onlyvars {
   my (@initial);
   my ($t, $h, @names) = @_;
@@ -64,7 +66,7 @@ bar(3, 1, qw($outside_var $y %x));						# test 3
 
 &{ my @array=qw(fring thrum); sub {bar(4, 2, qw(@array $outside_var));} };	# test 4
 
-sub {1};
+() = sub {1};
 my $alot_before;
 onlyvars(5, PadWalker::peek_my(0), qw($outside_var $alot_before));		# test 5
 
@@ -82,19 +84,12 @@ sub quux {
 quux(8, 2, qw($before $alot_before $after $outside_var %quux_var));		# test 8
 
 
-# THIS TEST FAILS EVERYWHERE! BUG ALERT!
-
 # Come right out to the file scope (and test eval handling)
 my $discriminate1;
-if (0) {
-    eval q{ my $inter; eval q{ my $discriminate2;
-     quux(9, 3, qw( $before $alot_before $after $outside_var
-		    $discriminate1 $discriminate2 $inter));				# test 9
-    } };
-}
-else {
-    print "ok 9 # test skipped\n"
-}
+eval q{ my $inter; eval q{ my $discriminate2;
+ quux(9, 3, qw( $before $alot_before $after $outside_var
+    $discriminate1 $discriminate2 $inter));			# test 9
+} };
 
 quux(10, 1, qw($outside_var $y %x));						# test 10
 
