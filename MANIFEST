@@ -1,7 +1,7 @@
 Changes
 Makefile.PL
 MANIFEST
-PadWalker.c
+PadWalker.xs
 PadWalker.pm
 README
 t/bar.pl

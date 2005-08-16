@@ -7,6 +7,7 @@ print "ok 1\n";
 ######################### End of black magic.
 
 our $this_one_shouldnt_be_found;
+$this_one_shouldnt_be_found = 12; # quieten warning
 
 sub onlyvars {
   my (@initial);

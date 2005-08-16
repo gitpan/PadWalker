@@ -38,9 +38,12 @@ of time. Sorry about that.
 	- acknowledge that test 9 fails because nested eval handling
           is simply broken. (Fix in a future release.)
 
-0.11 Wed Aug 10 20:06:41 BST 2005 
+0.11  Wed Aug 10 20:06:41 BST 2005 
 	- fix various nasty bugs, specifically:
 	 o peek_my(1) now works correctly in a sub called from the top level;
          o deal better with sub calls across source files
         - don't return 'our' variables. (It is peek_my(), after all!
           And the values were never properly returned.)
+
+0.12  Tue Aug 16 15:40:04 BST 2005
+	- make it work (up to a point) with Perl 5.6.
