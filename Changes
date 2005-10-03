@@ -47,3 +47,6 @@ of time. Sorry about that.
 
 0.12  Tue Aug 16 15:40:04 BST 2005
 	- make it work (up to a point) with Perl 5.6.
+
+0.13  Mon Oct  3 11:54:23 BST 2005
+	- don't build a debugging build unless explicitly told to!

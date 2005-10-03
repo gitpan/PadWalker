@@ -2,10 +2,27 @@ use ExtUtils::MakeMaker;
 
 use strict;
 
+# Remember (like I didn't) that WriteMakefile looks at @ARGV,
+# so an alternative way to configure a debugging build is:
+# perl Makefile.PL DEFINE=-DPADWALKER_DEBUGGING.
 my $DEBUGGING = '';
-if (@ARGV) {
+if (@ARGV && $ARGV[0] eq '-d') {
   warn "Configuring a debugging build of PadWalker\n";
+  print STDERR <<END;
+************************************************************************
+* WARNING!  WARNING!  WARNING!  WARNING!  WARNING!  WARNING!  WARNING! *
+************************************************************************
+You are building PadWalker in debugging mode, which causes it to
+print a lot of gnomic information about its internal operation.
+The test suite will fail, because this information will confuse
+the test harness. You almost certainly do *not* want to do this
+unless you're the author of PadWalker (or perhaps just irrepressibly
+curious about its internal operation).
+
+END
+
   $DEBUGGING = '-DPADWALKER_DEBUGGING';
+  shift;
 }
 
 require 5.00502;

@@ -62,7 +62,7 @@ show_cxstack(void)
 		  CV *cv = cxstack[i].blk_sub.cv;
 		  printf("\t%s", (cv && CvGV(cv)) ? GvNAME(CvGV(cv)) :"(null)");
 		}
-		putchar('\n');
+		printf("\n");
     }
 }
 #else
