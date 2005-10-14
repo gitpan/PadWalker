@@ -50,3 +50,26 @@ of time. Sorry about that.
 
 0.13  Mon Oct  3 11:54:23 BST 2005
 	- don't build a debugging build unless explicitly told to!
+
+0.14  Thu Oct  6 17:19:06 BST 2005
+	- Fix the bugs reported by Dave Mitchell:
+	 o if one variable masks another, make sure we return the
+	   appropriate one;
+         o for a variable whose value has been lost, return undef
+	   rather than the name of the variable;
+	 o Don't die if PadWalker is called from a closure whose
+           containing scope has disappeared.
+
+0.99  Fri Oct  7 17:23:09 BST 2005
+	- Make peek_sub return the values, if possible,
+ 	  even when it's not in the call chain;
+	- Allow an our variable to mask a my variable,
+	  and vice versa;
+	- Add peek_our and closed_over routines.
+
+0.99_91 Thu Oct 13 17:35:11 BST 2005
+	- Make peek_my work correctly when called from a do "file";
+	- Add var_name routine;
+	- Add an :all EXPORT_TAG;
+	- Drop support for perl < 5.8;
+	- Eliminate compiler warnings (at least on gcc).

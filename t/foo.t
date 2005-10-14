@@ -2,10 +2,11 @@ use strict;
 use PadWalker;
 use Data::Dumper;
 
-print "1..3\n";
+print "1..6\n";
 
 chdir "t";
 require "bar.pl";
+do "baz.pl";
 
 my $nono;
 
