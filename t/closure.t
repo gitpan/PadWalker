@@ -1,7 +1,7 @@
 use strict; use warnings;
 use PadWalker 'closed_over';
 
-print "1..14\n";
+print "1..16\n";
 
 my $x=2;
 my $h = closed_over (my $sub = sub {my $y = $x++});
@@ -51,3 +51,9 @@ sub bar{
   delete $h->{'$h'};
 }
 bar();
+
+our $blah = 9;
+my $blah = sub {$blah};
+my ($vars, $indices) = closed_over($blah);
+print (keys %$vars == 0 ? "ok 15\n" : "not ok 15\n");
+print (keys %$indices == 0 ? "ok 16\n" : "not ok 16\n");

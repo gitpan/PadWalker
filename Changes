@@ -41,9 +41,9 @@ of time. Sorry about that.
 0.11  Wed Aug 10 20:06:41 BST 2005 
 	- fix various nasty bugs, specifically:
 	 o peek_my(1) now works correctly in a sub called from the top level;
-         o deal better with sub calls across source files
-        - don't return 'our' variables. (It is peek_my(), after all!
-          And the values were never properly returned.)
+	 o deal better with sub calls across source files
+	- don't return 'our' variables. (It is peek_my(), after all!
+	  And the values were never properly returned.)
 
 0.12  Tue Aug 16 15:40:04 BST 2005
 	- make it work (up to a point) with Perl 5.6.
@@ -55,7 +55,7 @@ of time. Sorry about that.
 	- Fix the bugs reported by Dave Mitchell:
 	 o if one variable masks another, make sure we return the
 	   appropriate one;
-         o for a variable whose value has been lost, return undef
+	 o for a variable whose value has been lost, return undef
 	   rather than the name of the variable;
 	 o Don't die if PadWalker is called from a closure whose
            containing scope has disappeared.
@@ -73,3 +73,10 @@ of time. Sorry about that.
 	- Add an :all EXPORT_TAG;
 	- Drop support for perl < 5.8;
 	- Eliminate compiler warnings (at least on gcc).
+
+0.99_92 Sat Oct 15 00:17:24 BST 2005
+	- Add license info to META.yml;
+	- Use tabs consistently in the Changes file...
+	- Don't use snprintf (apparently Bill Gates doesn't approve);
+	- ignore 'our' variables in closed_over();
+	- Eliminate more compiler warnings, this time on Win32.

@@ -174,7 +174,7 @@ pads_into_hash(AV* pad_namelist, AV* pad_vallist, HV* my_hash, HV* our_hash, U32
           char* name_str = SvPVX(name_sv);
 
         debug_print(("** %s (%lx,%lx) [%lx]%s\n", name_str,
-               I_32(SvNVX(name_sv)), SvIVX(name_sv), valid_at_seq,
+               U_32(SvNVX(name_sv)), (U32)SvIVX(name_sv), valid_at_seq,
                SvFAKE(name_sv) ? " <fake>" : ""));
         
         /* Check that this variable is valid at the cop_seq
@@ -192,8 +192,8 @@ pads_into_hash(AV* pad_namelist, AV* pad_vallist, HV* my_hash, HV* our_hash, U32
          */
 
         if ((SvFAKE(name_sv) || 0 == valid_at_seq ||
-            (valid_at_seq <= SvIVX(name_sv) &&
-            valid_at_seq > I_32(SvNVX(name_sv)))) &&
+            (valid_at_seq <= (U32)SvIVX(name_sv) &&
+            valid_at_seq > U_32(SvNVX(name_sv)))) &&
             strlen(name_str) > 1 )
 
           {
@@ -233,7 +233,7 @@ pads_into_hash(AV* pad_namelist, AV* pad_vallist, HV* my_hash, HV* our_hash, U32
 }
 
 void
-padlist_into_hash(AV* padlist, HV* my_hash, HV* our_hash, U32 valid_at_seq, U16 depth)
+padlist_into_hash(AV* padlist, HV* my_hash, HV* our_hash, U32 valid_at_seq, long depth)
 {
     AV *pad_namelist, *pad_vallist;
     
@@ -259,14 +259,14 @@ context_vars(PERL_CONTEXT *cx, HV* my_ret, HV* our_ret, U32 seq, CV *cv)
         croak("Not nested deeply enough");
 
     else {
-        CV* cur_cv = cx ? cx->blk_sub.cv           : cv;
-        U16 depth  = cx ? cx->blk_sub.olddepth + 1 : 1;
+        CV*  cur_cv = cx ? cx->blk_sub.cv           : cv;
+        long depth  = cx ? cx->blk_sub.olddepth + 1 : 1;
 
         if (!cur_cv)
             die("panic: Context has no CV!\n");
     
         while (cur_cv) {
-            debug_print(("\tcv name = %s; depth=%d\n",
+            debug_print(("\tcv name = %s; depth=%ld\n",
                     CvGV(cur_cv) ? GvNAME(CvGV(cur_cv)) :"(null)", depth));
             if (CvPADLIST(cur_cv))
                 padlist_into_hash(CvPADLIST(cur_cv), my_ret, our_ret, seq, depth);
@@ -352,7 +352,7 @@ get_closed_over(CV *cv, HV *hash, HV *indices)
         char* name_str  = SvPVX(name_sv);
         STRLEN name_len = strlen(name_str);
         
-        if (SvFAKE(name_sv)) {
+        if (SvFAKE(name_sv) && 0 == (SvFLAGS(name_sv) & SVpad_OUR)) {
             SV **val   = av_fetch(pad_vallist, i, 0);
             SV *val_sv = val ? *val : &PL_sv_undef;
 #ifdef PADWALKER_DEBUGGING
@@ -364,11 +364,11 @@ get_closed_over(CV *cv, HV *hash, HV *indices)
 #endif
             hv_store(hash, name_str, name_len, newRV_inc(val_sv), 0);
             if (indices) {
-              char i_str[10];
-              snprintf(i_str, 10, "%ld", i);
-
-              hv_store(indices, i_str, strlen(i_str),
-                       newSVpv(name_str, name_len), 0);
+              /* Create a temporary SV as a way of getting perl to 
+               * stringify 'i' for us. */
+              SV *i_sv = newSViv(i);
+              hv_store_ent(indices, i_sv, newSVpv(name_str, name_len), 0);
+              SvREFCNT_dec(i_sv);
             }
         }
       }
@@ -408,9 +408,10 @@ up_cv(I32 uplevel, const char * caller_name)
       croak("%s: sub is < 0", caller_name);
 
     cx = upcontext(aTHX_ uplevel, 0, &ccstack, &cxix_from, &cxix_to);
-    if (cx == (PERL_CONTEXT *)-1)
+    if (cx == (PERL_CONTEXT *)-1) {
       croak("%s: Not nested deeply enough", caller_name);
-      
+      return 0;  /* NOT REACHED, but stop picky compilers from whining */
+    }
     else if (cx)
       return cx->blk_sub.cv;
       

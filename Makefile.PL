@@ -33,4 +33,5 @@ WriteMakefile(
     'DEFINE'	=> $DEBUGGING,
     'INC'	=> '',     # e.g., '-I/usr/include/other',
     ($DEBUGGING ? (CCFLAGS => '-Wall -ansi') : ()),
+    'NO_META'   => 1,
 );
