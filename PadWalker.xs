@@ -367,7 +367,7 @@ get_closed_over(CV *cv, HV *hash, HV *indices)
               /* Create a temporary SV as a way of getting perl to 
                * stringify 'i' for us. */
               SV *i_sv = newSViv(i);
-              hv_store_ent(indices, i_sv, newSVpv(name_str, name_len), 0);
+              hv_store_ent(indices, i_sv, newRV_inc(val_sv), 0);
               SvREFCNT_dec(i_sv);
             }
         }

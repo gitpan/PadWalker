@@ -67,16 +67,20 @@ of time. Sorry about that.
 	  and vice versa;
 	- Add peek_our and closed_over routines.
 
-0.99_91 Thu Oct 13 17:35:11 BST 2005
+0.99_91  Thu Oct 13 17:35:11 BST 2005
 	- Make peek_my work correctly when called from a do "file";
 	- Add var_name routine;
 	- Add an :all EXPORT_TAG;
 	- Drop support for perl < 5.8;
 	- Eliminate compiler warnings (at least on gcc).
 
-0.99_92 Sat Oct 15 00:17:24 BST 2005
+0.99_92  Sat Oct 15 00:17:24 BST 2005
 	- Add license info to META.yml;
 	- Use tabs consistently in the Changes file...
 	- Don't use snprintf (apparently Bill Gates doesn't approve);
 	- ignore 'our' variables in closed_over();
 	- Eliminate more compiler warnings, this time on Win32.
+
+0.99_93  Fri Oct 28 13:18:20 BST 2005
+	- Change the sekrit undocumented second return value
+	  of closed_over() to something slightly different.
