@@ -84,3 +84,6 @@ of time. Sorry about that.
 0.99_93  Fri Oct 28 13:18:20 BST 2005
 	- Change the sekrit undocumented second return value
 	  of closed_over() to something slightly different.
+
+1.0  Wed Nov  2 12:25:49 GMT 2005
+	- Bump version number to 1.0
