@@ -48,6 +48,10 @@ show_cxstack(void)
 # define show_cxstack()
 #endif
 
+#ifndef OURSTASH
+# define OURSTASH GvSTASH
+#endif
+
 /* Originally stolen from pp_ctl.c; now significantly different */
 
 I32
@@ -211,7 +215,7 @@ pads_into_hash(AV* pad_namelist, AV* pad_vallist, HV* my_hash, HV* our_hash, U32
             }
             else {
               if (is_our) {
-                val_sv = fetch_from_stash(GvSTASH(name_sv), name_str, name_len);
+                val_sv = fetch_from_stash(OURSTASH(name_sv), name_str, name_len);
                 if (!val_sv) {
                     debug_print(("Value of our variable is undefined\n"));
                     val_sv = &PL_sv_undef;

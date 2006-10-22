@@ -87,3 +87,10 @@ of time. Sorry about that.
 
 1.0  Wed Nov  2 12:25:49 GMT 2005
 	- Bump version number to 1.0
+
+1.1  Sun Oct 22 16:13:40 BST 2006
+	- Accommodate change 27312 "Store the stash for our in magic slot"
+	  (See http://www.mail-archive.com/perl5-changes@perl.org/msg14073.html
+	  or http://public.activestate.com/cgi-bin/perlbrowse/27312)
+	
+	  See also http://public.activestate.com/cgi-bin/perlbrowse/27306
