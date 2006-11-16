@@ -94,3 +94,8 @@ of time. Sorry about that.
 	  or http://public.activestate.com/cgi-bin/perlbrowse/27312)
 	
 	  See also http://public.activestate.com/cgi-bin/perlbrowse/27306
+
+1.2  Thu Nov 16 22:33:27 GMT 2006
+	- Change prerequisites to accurately reflect versions of Perl that
+	  PadWalker actually works with (i.e. 5.8.2 or later).
+	- Fix memory leak: thanks to Rocco Caputo

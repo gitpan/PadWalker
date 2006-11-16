@@ -1,9 +1,6 @@
 -----------------------------------------------------------------------------
-| PadWalker v1.1    - Robin Houston
+| PadWalker v1.2    - Robin Houston
 -----------------------------------------------------------------------------
-
-[ The only difference from 1.0 is that 1.1 works with the
-  current development version of Perl. ]
 
 NAME
        PadWalker - play with other peoples' lexical variables

@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 
 use strict;
-require 5.008;
+require 5.008002;
 
 # Remember (like I didn't) that WriteMakefile looks at @ARGV,
 # so an alternative way to configure a debugging build is:

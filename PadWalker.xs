@@ -444,7 +444,7 @@ I32 uplevel;
     HV* ignore = newHV();
  PPCODE:
     do_peek(uplevel, ret, ignore);
-    hv_undef(ignore);
+    SvREFCNT_dec((SV*) ignore);
     EXTEND(SP, 1);
     PUSHs(sv_2mortal(newRV_noinc((SV*)ret)));
 
@@ -456,7 +456,7 @@ I32 uplevel;
     HV* ignore = newHV();
  PPCODE:
     do_peek(uplevel, ignore, ret);
-    hv_undef(ignore);
+    SvREFCNT_dec((SV*) ignore);
     EXTEND(SP, 1);
     PUSHs(sv_2mortal(newRV_noinc((SV*)ret)));
 
@@ -469,7 +469,7 @@ CV* cv;
     HV* ignore = newHV();
   PPCODE:
     padlist_into_hash(CvPADLIST(cv), ret, ignore, 0, CvDEPTH(cv));
-    hv_undef(ignore);
+    SvREFCNT_dec((SV*) ignore);
     EXTEND(SP, 1);
     PUSHs(sv_2mortal(newRV_noinc((SV*)ret)));
 
