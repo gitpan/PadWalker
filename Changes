@@ -99,3 +99,7 @@ of time. Sorry about that.
 	- Change prerequisites to accurately reflect versions of Perl that
 	  PadWalker actually works with (i.e. 5.8.2 or later).
 	- Fix memory leak: thanks to Rocco Caputo
+
+1.3  Tue Jan  2 23:10:35 GMT 2007
+	- Accommodate changes 29629-29630 "Move the low/high cop sequences
+	  from NVX/IVX to a two U32 structure".

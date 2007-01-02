@@ -52,6 +52,14 @@ show_cxstack(void)
 # define OURSTASH GvSTASH
 #endif
 
+#ifndef COP_SEQ_RANGE_LOW
+#  define COP_SEQ_RANGE_LOW(sv)                  U_32(SvNVX(sv))
+#endif
+#ifndef COP_SEQ_RANGE_HIGH
+#  define COP_SEQ_RANGE_HIGH(sv)                 U_32(SvUVX(sv))
+#endif
+
+
 /* Originally stolen from pp_ctl.c; now significantly different */
 
 I32
@@ -178,7 +186,7 @@ pads_into_hash(AV* pad_namelist, AV* pad_vallist, HV* my_hash, HV* our_hash, U32
           char* name_str = SvPVX(name_sv);
 
         debug_print(("** %s (%lx,%lx) [%lx]%s\n", name_str,
-               U_32(SvNVX(name_sv)), (U32)SvIVX(name_sv), valid_at_seq,
+               COP_SEQ_RANGE_LOW(name_sv), COP_SEQ_RANGE_HIGH(name_sv), valid_at_seq,
                SvFAKE(name_sv) ? " <fake>" : ""));
         
         /* Check that this variable is valid at the cop_seq
@@ -196,8 +204,8 @@ pads_into_hash(AV* pad_namelist, AV* pad_vallist, HV* my_hash, HV* our_hash, U32
          */
 
         if ((SvFAKE(name_sv) || 0 == valid_at_seq ||
-            (valid_at_seq <= (U32)SvIVX(name_sv) &&
-            valid_at_seq > U_32(SvNVX(name_sv)))) &&
+            (valid_at_seq <= COP_SEQ_RANGE_HIGH(name_sv) &&
+            valid_at_seq > COP_SEQ_RANGE_LOW(name_sv))) &&
             strlen(name_str) > 1 )
 
           {

@@ -12,7 +12,7 @@ require 5.008;
 @EXPORT_OK = qw(peek_my peek_our closed_over peek_sub var_name);
 %EXPORT_TAGS = (all => \@EXPORT_OK);
 
-$VERSION = '1.2';
+$VERSION = '1.3';
 
 bootstrap PadWalker $VERSION;
 
@@ -147,7 +147,7 @@ Devel::LexAlias, Devel::Caller, Sub::Parameters
 
 =head1 COPYRIGHT
 
-Copyright (c) 2000-2005, Robin Houston. All Rights Reserved.
+Copyright (c) 2000-2007, Robin Houston. All Rights Reserved.
 This module is free software. It may be used, redistributed
 and/or modified under the same terms as Perl itself.
 
