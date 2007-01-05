@@ -48,8 +48,12 @@ show_cxstack(void)
 # define show_cxstack()
 #endif
 
-#ifndef OURSTASH
-# define OURSTASH GvSTASH
+#ifndef SvOURSTASH
+# ifdef OURSTASH
+#  define SvOURSTASH OURSTASH
+# else
+#  define OURSTASH GvSTASH
+# endif
 #endif
 
 #ifndef COP_SEQ_RANGE_LOW
@@ -223,7 +227,7 @@ pads_into_hash(AV* pad_namelist, AV* pad_vallist, HV* my_hash, HV* our_hash, U32
             }
             else {
               if (is_our) {
-                val_sv = fetch_from_stash(OURSTASH(name_sv), name_str, name_len);
+                val_sv = fetch_from_stash(SvOURSTASH(name_sv), name_str, name_len);
                 if (!val_sv) {
                     debug_print(("Value of our variable is undefined\n"));
                     val_sv = &PL_sv_undef;
