@@ -108,3 +108,6 @@ of time. Sorry about that.
 	- Accommodate change 29679 "Rename OURSTASH to SvOURSTASH and
 	  OURSTASH_set to SvOURSTASH_set". (Dear Nick, please stop
 	  breaking PadWalker. kthxbye.)
+
+1.5  Fri Jan  5 16:22:27 GMT 2007
+	- Fix egregrious bug in 1.4 :-(

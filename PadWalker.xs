@@ -52,7 +52,7 @@ show_cxstack(void)
 # ifdef OURSTASH
 #  define SvOURSTASH OURSTASH
 # else
-#  define OURSTASH GvSTASH
+#  define SvOURSTASH GvSTASH
 # endif
 #endif
 
