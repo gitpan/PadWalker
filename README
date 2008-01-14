@@ -1,11 +1,6 @@
 -----------------------------------------------------------------------------
-| PadWalker v1.5    - Robin Houston
+| PadWalker v1.6    - Robin Houston
 -----------------------------------------------------------------------------
-
-[ Note: versions 1.3-1.5 are forward-compatibility releases, designed to
-  make PadWalker compatible with the development version of Perl, and with
-  Perl 5.10 when it is released. There is no reason for most users to upgrade
-  immediately. ]
 
 NAME
        PadWalker - play with other peoples' lexical variables

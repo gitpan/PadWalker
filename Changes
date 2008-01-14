@@ -111,3 +111,9 @@ of time. Sorry about that.
 
 1.5  Fri Jan  5 16:22:27 GMT 2007
 	- Fix egregrious bug in 1.4 :-(
+
+1.6  Mon Jan 14 10:48:09 GMT 2008
+	- Make _upcontext work in 64-bit architectures.
+	  (http://rt.cpan.org/Ticket/Display.html?id=32287)
+	  Thanks to Niko Tyni.
+

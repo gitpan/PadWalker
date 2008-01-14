@@ -532,6 +532,5 @@ void
 _upcontext(uplevel)
 I32 uplevel
   PPCODE:
-    /* I'm not sure why this is here, but I'll leave it in case
-         * somebody is using it in an insanely evil way. */
-    XPUSHs(sv_2mortal(newSViv((U32)upcontext(aTHX_ uplevel, 0, 0, 0, 0))));
+    /* This is used by Devel::Caller. */
+    XPUSHs(sv_2mortal(newSViv((IV)upcontext(aTHX_ uplevel, 0, 0, 0, 0))));
