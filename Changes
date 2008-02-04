@@ -117,3 +117,6 @@ of time. Sorry about that.
 	  (http://rt.cpan.org/Ticket/Display.html?id=32287)
 	  Thanks to Niko Tyni.
 
+1.7  Mon Feb  4 09:56:31 GMT 2008
+	- Keep up with changes in blead post-5.10 (@33030)
+

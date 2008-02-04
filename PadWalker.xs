@@ -2,6 +2,10 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#ifndef CxOLD_OP_TYPE
+#  define CxOLD_OP_TYPE(cx)      (0 + (cx)->blk_eval.old_op_type)
+#endif
+
 /* For development testing */
 #ifdef PADWALKER_DEBUGGING
 # define debug_print(x) printf x
@@ -319,8 +323,8 @@ do_peek(I32 uplevel, HV* my_hash, HV* our_hash)
             cxtype_name(CxTYPE(&ccstack[i])), i));
         switch (CxTYPE(&ccstack[i])) {
         case CXt_EVAL:
-            debug_print(("\told_op_type = %ld\n", ccstack[i].blk_eval.old_op_type));
-            switch(ccstack[i].blk_eval.old_op_type) {
+            debug_print(("\told_op_type = %ld\n", CxOLD_OP_TYPE(&ccstack[i])));
+            switch(CxOLD_OP_TYPE(&ccstack[i])) {
             case OP_ENTEREVAL:
                 if (first_eval) {
                    context_vars(0, my_hash, our_hash, cop->cop_seq, ccstack[i].blk_eval.cv);
@@ -435,7 +439,7 @@ up_cv(I32 uplevel, const char * caller_name)
 
       for (i = cxix_from-1; i > cxix_to; --i)
         if (CxTYPE(&ccstack[i]) == CXt_EVAL) {
-          I32 old_op_type = ccstack[i].blk_eval.old_op_type;
+          I32 old_op_type = CxOLD_OP_TYPE(&ccstack[i]);
           if (old_op_type == OP_REQUIRE || old_op_type == OP_DOFILE)
             return ccstack[i].blk_eval.cv;
         }
