@@ -120,3 +120,6 @@ of time. Sorry about that.
 1.7  Mon Feb  4 09:56:31 GMT 2008
 	- Keep up with changes in blead post-5.10 (@33030)
 
+1.8  Thu 25 Jun 2009 21:17:17 BST
+	- Apply patches from doy (#41710) and nothingmuch (set_closed_over).
+

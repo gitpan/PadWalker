@@ -9,10 +9,10 @@ require DynaLoader;
 require 5.008;
 
 @ISA = qw(Exporter DynaLoader);
-@EXPORT_OK = qw(peek_my peek_our closed_over peek_sub var_name);
+@EXPORT_OK = qw(peek_my peek_our closed_over peek_sub var_name set_closed_over);
 %EXPORT_TAGS = (all => \@EXPORT_OK);
 
-$VERSION = '1.7';
+$VERSION = '1.8';
 
 bootstrap PadWalker $VERSION;
 
@@ -112,6 +112,12 @@ in other words, the variables which it closes over. This I<does> have
 reasonable uses: see L<Data::Dump::Streamer>, for example (a future version
 of which may in fact use C<closed_over>).
 
+=item set_closed_over SUB, HASH_REF
+
+C<set_closed_over> reassigns the pad variables that are closed over by the subroutine.
+
+The second argument is a hash of references, much like the one returned from C<closed_over>.
+
 =item var_name LEVEL, VAR_REF
 
 =item var_name SUB,   VAR_REF
@@ -137,9 +143,9 @@ For example,
 
 Robin Houston <robin@cpan.org>
 
-With contributions from Richard Soberberg, bug-spotting
-from Peter Scott and Dave Mitchell, and suggestions from
-demerphq.
+With contributions from Richard Soberberg, Jesse Luehrs and
+Yuval Kogman, bug-spotting from Peter Scott, Dave Mitchell and
+Goro Fuji, and suggestions from demerphq.
 
 =head1 SEE ALSO
 
@@ -147,7 +153,7 @@ Devel::LexAlias, Devel::Caller, Sub::Parameters
 
 =head1 COPYRIGHT
 
-Copyright (c) 2000-2007, Robin Houston. All Rights Reserved.
+Copyright (c) 2000-2009, Robin Houston. All Rights Reserved.
 This module is free software. It may be used, redistributed
 and/or modified under the same terms as Perl itself.
 

@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------
-| PadWalker v1.7    - Robin Houston
+| PadWalker v1.8    - Robin Houston
 -----------------------------------------------------------------------------
 
 NAME
@@ -78,6 +78,13 @@ DESCRIPTION
 	   does have reasonable uses: see Data::Dump::Streamer, for example (a
 	   future version of which may in fact use "closed_over").
 
+       set_closed_over SUB, HASH_REF
+	   "set_closed_over" reassigns the pad variables that are closed over
+	   by the subroutine.
+
+	   The second argument is a hash of references, much like the one
+	   returned from "closed_over".
+
        var_name LEVEL, VAR_REF
        var_name SUB,   VAR_REF
 	   "var_name(sub, var_ref)" returns the name of the variable referred
@@ -106,6 +113,6 @@ SEE ALSO
        Devel::LexAlias, Devel::Caller, Sub::Parameters
 
 COPYRIGHT
-       Copyright (c) 2000-2007, Robin Houston. All Rights Reserved.  This mod-
+       Copyright (c) 2000-2009, Robin Houston. All Rights Reserved.  This mod-
        ule is free software. It may be used, redistributed and/or modified
        under the same terms as Perl itself.

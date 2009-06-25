@@ -358,9 +358,17 @@ void
 get_closed_over(CV *cv, HV *hash, HV *indices)
 {
     I32 i;
-    U32 val_depth = CvDEPTH(cv) ? CvDEPTH(cv) : 1;
-    AV *pad_namelist = (AV*) *av_fetch(CvPADLIST(cv), 0, FALSE);
-    AV *pad_vallist  = (AV*) *av_fetch(CvPADLIST(cv), val_depth, FALSE);
+    U32 val_depth;
+    AV *pad_namelist;
+    AV *pad_vallist;
+
+    if (!CvPADLIST(cv)) {
+        return;
+    }
+
+    val_depth = CvDEPTH(cv) ? CvDEPTH(cv) : 1;
+    pad_namelist = (AV*) *av_fetch(CvPADLIST(cv), 0, FALSE);
+    pad_vallist  = (AV*) *av_fetch(CvPADLIST(cv), val_depth, FALSE);
 
     debug_print(("av_len(CvPADLIST(cv)) = %ld\n", av_len(CvPADLIST(cv)) ));
     
@@ -488,6 +496,52 @@ CV* cv;
     SvREFCNT_dec((SV*) ignore);
     EXTEND(SP, 1);
     PUSHs(sv_2mortal(newRV_noinc((SV*)ret)));
+
+
+
+void
+set_closed_over(sv, pad)
+SV* sv;
+HV* pad;
+  PREINIT:
+    I32 i;
+    CV *cv = (CV *)SvRV(sv);
+    U32 val_depth = CvDEPTH(cv) ? CvDEPTH(cv) : 1;
+    AV *pad_namelist = (AV*) *av_fetch(CvPADLIST(cv), 0, FALSE);
+    AV *pad_vallist  = (AV*) *av_fetch(CvPADLIST(cv), val_depth, FALSE);
+  CODE:
+    for (i=av_len(pad_namelist); i>=0; --i) {
+      SV** name_ptr = av_fetch(pad_namelist, i, 0);
+
+      if (name_ptr && SvPOKp(*name_ptr)) {
+        SV*   name_sv   = *name_ptr;
+        char* name_str  = SvPVX(name_sv);
+        STRLEN name_len = strlen(name_str);
+
+        if (SvFAKE(name_sv) && 0 == (SvFLAGS(name_sv) & SVpad_OUR)) {
+          SV **restore_ref = hv_fetch(pad, name_str, name_len, FALSE);
+          if ( restore_ref ) {
+            if ( SvROK(*restore_ref) ) {
+              SV *restore = SvRV(*restore_ref);
+              SV **orig = av_fetch(pad_vallist, i, 0);
+
+              if ( !orig || !*orig || strcmp(sv_reftype(*orig, 0), sv_reftype(restore, 0)) == 0 ) {
+                SvREFCNT_inc(restore);
+
+                if ( av_store(pad_vallist, i, restore) == NULL )
+                  SvREFCNT_dec(restore);
+              } else {
+                croak("Incorrect reftype for variable %s (got %s expected %s)", name_str, sv_reftype(restore, 0), sv_reftype(*orig, 0));
+              }
+            } else {
+              croak("The variable for %s is not a reference", name_str);
+            }
+          }
+        }
+      }
+    }
+
+
 
 void
 closed_over(cv)

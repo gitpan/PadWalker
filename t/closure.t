@@ -1,7 +1,7 @@
 use strict; use warnings;
-use PadWalker 'closed_over';
+use PadWalker 'closed_over', 'set_closed_over';
 
-print "1..16\n";
+print "1..28\n";
 
 my $x=2;
 my $h = closed_over (my $sub = sub {my $y = $x++});
@@ -53,7 +53,48 @@ sub bar{
 bar();
 
 our $blah = 9;
+no warnings 'misc';
 my $blah = sub {$blah};
 my ($vars, $indices) = closed_over($blah);
 print (keys %$vars == 0 ? "ok 15\n" : "not ok 15\n");
 print (keys %$indices == 0 ? "ok 16\n" : "not ok 16\n");
+
+
+{
+    my $x     = 1;
+    my @foo   = ();
+    my $other = 5;
+    my $h     = closed_over( my $sub = sub { my $y = $x++; push @foo, $y; $y } );
+
+    my @keys = keys %$h;
+
+    print( @keys == 2 ? "ok 17\n" : "not ok 17\n" );
+    print( ${ $h->{'$x'} } eq 1 ? "ok 18\n" : "not ok 18\n" );
+
+    print( $sub->() == 1 ? "ok 19\n" : "not ok 19\n" );
+
+    set_closed_over( $sub, { '$x' => \$other } );
+
+    print( $sub->() == 5 ? "ok 20\n" : "not ok 20\n" );
+
+    print( $x == 2     ? "ok 21\n" : "not ok 21\n" );
+    print( $other == 6 ? "ok 22\n" : "not ok 22\n" );
+
+    print( @foo == 2 ? "ok 23\n" : "not ok 23\n" );
+
+    print( $foo[0] == 1 ? "ok 24\n" : "not ok 24\n" );
+
+    print( $foo[1] == 5 ? "ok 25\n" : "not ok 25\n" );
+
+    my @other;
+
+    set_closed_over( $sub, { '@foo' => \@other } );
+
+    print( $sub->() == 6 ? "ok 26\n" : "not ok 26\n" );
+
+    print( @other == 1 ? "ok 27\n" : "not ok 27\n" );
+
+    eval { set_closed_over( $sub, { '@foo' => \"foo" } ) };
+
+    print( $@ ? "ok 28\n" : "not ok 28\n" );
+}
