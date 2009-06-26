@@ -123,6 +123,6 @@ of time. Sorry about that.
 1.8  Thu 25 Jun 2009 21:17:17 BST
 	- Apply patches from doy (#41710) and nothingmuch (set_closed_over).
 
-1.8.1  Fri 26 Jun 2009 10:01:17 BST
+1.9  Fri 26 Jun 2009 10:01:17 BST
 	- Identical to 1.8, but with the bogus metadata ._ files removed
 	  from the distributed tar file.
