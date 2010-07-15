@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------
-| PadWalker v1.91    - Robin Houston
+| PadWalker v1.92    - Robin Houston
 -----------------------------------------------------------------------------
 
 NAME
@@ -106,8 +106,9 @@ DESCRIPTION
 AUTHOR
        Robin Houston <robin@cpan.org>
 
-       With contributions from Richard Soberberg, Florian Ragwitz and Yuval Kogman,
-       bug-spotting from Peter Scott and Dave Mitchell, and suggestions from demerphq.
+       With contributions from Richard Soberberg, Florian Ragwitz, Yuval Kogman, and
+       Fuji, Goro, bug-spotting from Peter Scott and Dave Mitchell, and suggestions
+       from demerphq.
 
 SEE ALSO
        Devel::LexAlias, Devel::Caller, Sub::Parameters
