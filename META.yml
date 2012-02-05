@@ -1,12 +1,21 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         PadWalker
-version:      1.7
-license:      perl
-version_from: PadWalker.pm
-installdirs:  site
+--- #YAML:1.0
+name:               PadWalker
+version:            1.93
+abstract:           ~
+author:  []
+license:            unknown
+distribution_type:  module
+configure_requires:
+    ExtUtils::MakeMaker:  0
+build_requires:
+    ExtUtils::MakeMaker:  0
 requires:
-  perl: 5.008002
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.21
+    perl:  5.008002
+no_index:
+    directory:
+        - t
+        - inc
+generated_by:       ExtUtils::MakeMaker version 6.56
+meta-spec:
+    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
+    version:  1.4
