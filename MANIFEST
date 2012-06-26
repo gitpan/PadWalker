@@ -18,3 +18,4 @@ t/var_name.t
 t/vn-inc-1.pl
 t/vn-inc-2.pl
 META.yml                                 Module meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)
